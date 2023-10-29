@@ -1,14 +1,32 @@
 {
   "name": "@vscode/test-electron",
   "version": "0.0.1",
+  "private": "false",
+  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
+  "bugs": {
+    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Nikola Hristov",
+    "email": "nikola@nikolahristov.tech",
+    "url": "https://nikolahristov.tech"
+  },
+  "publisher": "playform",
+  "type": "module",
+  "main": "./out/index.js",
   "scripts": {
     "compile": "tsc -p ./",
-    "watch": "tsc -w -p ./",
-    "prepack": "tsc -p ./",
     "fmt": "prettier --write \"lib/**/*.ts\" \"*.md\"",
-    "test": "eslint lib --ext ts && vitest && tsc --noEmit",
+    "prepack": "tsc -p ./",
     "prepare": "husky install",
-    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts"
+    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts",
+    "test": "eslint lib --ext ts && vitest && tsc --noEmit",
+    "watch": "tsc -w -p ./"
   },
   "lint-staged": {
     "*.ts": [
@@ -18,10 +36,6 @@
     "*.md": [
       "prettier --write"
     ]
-  },
-  "main": "./out/index.js",
-  "engines": {
-    "node": ">=16"
   },
   "dependencies": {
     "http-proxy-agent": "7.0.0",
@@ -41,25 +55,12 @@
     "lint-staged": "15.0.2",
     "prettier": "3.0.3",
     "typescript": "5.2.2",
-    "vitest": "0.34.6",
-    "typescript-esbuild": "0.3.1"
+    "typescript-esbuild": "0.3.1",
+    "vitest": "0.34.6"
   },
-  "license": "MIT",
-  "author": {
-    "name": "Nikola Hristov",
-    "email": "nikola@nikolahristov.tech",
-    "url": "https://nikolahristov.tech"
+  "engines": {
+    "node": ">=16"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
-  },
-  "bugs": {
-    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
-  },
-  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
-  "type": "module",
-  "private": "false",
   "publishConfig": {
     "access": "public"
   }
