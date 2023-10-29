@@ -1,13 +1,14 @@
 {
   "name": "@vscode/test-electron",
-  "version": "2.3.6",
+  "version": "0.0.1",
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -w -p ./",
     "prepack": "tsc -p ./",
     "fmt": "prettier --write \"lib/**/*.ts\" \"*.md\"",
     "test": "eslint lib --ext ts && vitest && tsc --noEmit",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts"
   },
   "lint-staged": {
     "*.ts": [
@@ -40,15 +41,26 @@
     "lint-staged": "15.0.2",
     "prettier": "3.0.3",
     "typescript": "5.2.2",
-    "vitest": "0.34.6"
+    "vitest": "0.34.6",
+    "typescript-esbuild": "0.3.1"
   },
   "license": "MIT",
-  "author": "Visual Studio Code Team",
+  "author": {
+    "name": "Nikola Hristov",
+    "email": "nikola@nikolahristov.tech",
+    "url": "https://nikolahristov.tech"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/vscode-test.git"
+    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
   },
   "bugs": {
-    "url": "https://github.com/Microsoft/vscode-test/issues"
+    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
+  },
+  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
+  "type": "module",
+  "private": "false",
+  "publishConfig": {
+    "access": "public"
   }
 }

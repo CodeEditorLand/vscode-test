@@ -1,40 +1,61 @@
 {
-	"name": "vscode-test-sample",
-	"displayName": "vscode-test-sample",
-	"description": "",
-	"version": "0.0.1",
-	"engines": {
-		"vscode": "1.32.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:extension.helloWorld"
-	],
-	"main": "./out/src/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "yarn run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"test": "cd .. && tsc && cd sample && tsc && node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/glob": "8.1.0",
-		"@types/mocha": "10.0.3",
-		"@types/node": "20",
-		"@types/vscode": "1.83.1",
-		"glob": "10.3.10",
-		"mocha": "10.2.0",
-		"typescript": "5.2.2"
-	},
-	"dependencies": {}
+  "name": "vscode-test-sample",
+  "displayName": "vscode-test-sample",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "1.32.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.helloWorld"
+  ],
+  "main": "./out/src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.helloWorld",
+        "title": "Hello World"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "cd .. && tsc && cd sample && tsc && node ./out/test/runTest.js",
+    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts"
+  },
+  "devDependencies": {
+    "@types/glob": "8.1.0",
+    "@types/mocha": "10.0.3",
+    "@types/node": "20",
+    "@types/vscode": "1.83.1",
+    "glob": "10.3.10",
+    "mocha": "10.2.0",
+    "typescript": "5.2.2",
+    "typescript-esbuild": "0.3.1"
+  },
+
+  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
+  "bugs": {
+    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "private": "false",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": {
+    "name": "Nikola Hristov",
+    "email": "nikola@nikolahristov.tech",
+    "url": "https://nikolahristov.tech"
+  }
 }
