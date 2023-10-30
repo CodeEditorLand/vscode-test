@@ -3,18 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IncomingMessage } from 'http';
-import * as https from 'https';
-import { urlToOptions } from './util';
+import { IncomingMessage } from "http";
+import * as https from "https";
+import { urlToOptions } from "./util";
 
-export async function getStream(api: string, timeout: number): Promise<IncomingMessage> {
+export async function getStream(
+	api: string,
+	timeout: number
+): Promise<IncomingMessage> {
 	const ctrl = new TimeoutController(timeout);
 	return new Promise<IncomingMessage>((resolve, reject) => {
-		ctrl.signal.addEventListener('abort', () => {
+		ctrl.signal.addEventListener("abort", () => {
 			reject(new TimeoutError(timeout));
 			req.destroy();
 		});
-		const req = https.get(api, urlToOptions(api), (res) => resolve(res)).on('error', reject);
+		const req = https
+			.get(api, urlToOptions(api), (res) => resolve(res))
+			.on("error", reject);
 	}).finally(() => ctrl.dispose());
 }
 
@@ -22,7 +27,7 @@ export async function getJSON<T>(api: string, timeout: number): Promise<T> {
 	const ctrl = new TimeoutController(timeout);
 
 	return new Promise<T>((resolve, reject) => {
-		ctrl.signal.addEventListener('abort', () => {
+		ctrl.signal.addEventListener("abort", () => {
 			reject(new TimeoutError(timeout));
 			req.destroy();
 		});
@@ -30,31 +35,33 @@ export async function getJSON<T>(api: string, timeout: number): Promise<T> {
 		const req = https
 			.get(api, urlToOptions(api), (res) => {
 				if (res.statusCode !== 200) {
-					reject('Failed to get JSON');
+					reject("Failed to get JSON");
 				}
 
-				let data = '';
+				let data = "";
 
-				res.on('data', (chunk) => {
+				res.on("data", (chunk) => {
 					ctrl.touch();
 					data += chunk;
 				});
 
-				res.on('end', () => {
+				res.on("end", () => {
 					ctrl.dispose();
 
 					try {
 						const jsonData = JSON.parse(data);
 						resolve(jsonData);
 					} catch (err) {
-						console.error(`Failed to parse response from ${api} as JSON`);
+						console.error(
+							`Failed to parse response from ${api} as JSON`
+						);
 						reject(err);
 					}
 				});
 
-				res.on('error', reject);
+				res.on("error", reject);
 			})
-			.on('error', reject);
+			.on("error", reject);
 	}).finally(() => ctrl.dispose());
 }
 

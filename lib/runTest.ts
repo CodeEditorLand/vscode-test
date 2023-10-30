@@ -3,11 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as cp from 'child_process';
-import * as path from 'path';
-import { downloadAndUnzipVSCode, DownloadVersion, DownloadPlatform, defaultCachePath } from './download';
-import { ProgressReporter } from './progress';
-import { killTree } from './util';
+import * as cp from "child_process";
+import * as path from "path";
+import {
+	downloadAndUnzipVSCode,
+	DownloadVersion,
+	DownloadPlatform,
+	defaultCachePath,
+} from "./download";
+import { ProgressReporter } from "./progress";
+import { killTree } from "./util";
 
 export interface TestOptions {
 	/**
@@ -130,21 +135,27 @@ export async function runTests(options: TestOptions): Promise<number> {
 
 	let args = [
 		// https://github.com/microsoft/vscode/issues/84238
-		'--no-sandbox',
+		"--no-sandbox",
 		// https://github.com/microsoft/vscode-test/issues/221
-		'--disable-gpu-sandbox',
+		"--disable-gpu-sandbox",
 		// https://github.com/microsoft/vscode-test/issues/120
-		'--disable-updates',
-		'--skip-welcome',
-		'--skip-release-notes',
-		'--disable-workspace-trust',
-		'--extensionTestsPath=' + options.extensionTestsPath,
+		"--disable-updates",
+		"--skip-welcome",
+		"--skip-release-notes",
+		"--disable-workspace-trust",
+		"--extensionTestsPath=" + options.extensionTestsPath,
 	];
 
 	if (Array.isArray(options.extensionDevelopmentPath)) {
-		args.push(...options.extensionDevelopmentPath.map((devPath) => `--extensionDevelopmentPath=${devPath}`));
+		args.push(
+			...options.extensionDevelopmentPath.map(
+				(devPath) => `--extensionDevelopmentPath=${devPath}`
+			)
+		);
 	} else {
-		args.push(`--extensionDevelopmentPath=${options.extensionDevelopmentPath}`);
+		args.push(
+			`--extensionDevelopmentPath=${options.extensionDevelopmentPath}`
+		);
 	}
 
 	if (options.launchArgs) {
@@ -155,28 +166,36 @@ export async function runTests(options: TestOptions): Promise<number> {
 		args.push(...getProfileArguments(args));
 	}
 
-	return innerRunTests(options.vscodeExecutablePath, args, options.extensionTestsEnv);
+	return innerRunTests(
+		options.vscodeExecutablePath,
+		args,
+		options.extensionTestsEnv
+	);
 }
 
 /** Adds the extensions and user data dir to the arguments for the VS Code CLI */
 export function getProfileArguments(args: readonly string[]) {
 	const out: string[] = [];
-	if (!hasArg('extensions-dir', args)) {
-		out.push(`--extensions-dir=${path.join(defaultCachePath, 'extensions')}`);
+	if (!hasArg("extensions-dir", args)) {
+		out.push(
+			`--extensions-dir=${path.join(defaultCachePath, "extensions")}`
+		);
 	}
 
-	if (!hasArg('user-data-dir', args)) {
-		out.push(`--user-data-dir=${path.join(defaultCachePath, 'user-data')}`);
+	if (!hasArg("user-data-dir", args)) {
+		out.push(`--user-data-dir=${path.join(defaultCachePath, "user-data")}`);
 	}
 
 	return out;
 }
 
 function hasArg(argName: string, argList: readonly string[]) {
-	return argList.some((a) => a === `--${argName}` || a.startsWith(`--${argName}=`));
+	return argList.some(
+		(a) => a === `--${argName}` || a.startsWith(`--${argName}=`)
+	);
 }
 
-const SIGINT = 'SIGINT';
+const SIGINT = "SIGINT";
 
 async function innerRunTests(
 	executable: string,
@@ -191,13 +210,13 @@ async function innerRunTests(
 	const ctrlc1 = () => {
 		process.removeListener(SIGINT, ctrlc1);
 		process.on(SIGINT, ctrlc2);
-		console.log('Closing VS Code gracefully. Press Ctrl+C to force close.');
+		console.log("Closing VS Code gracefully. Press Ctrl+C to force close.");
 		exitRequested = true;
 		cmd.kill(SIGINT); // this should cause the returned promise to resolve
 	};
 
 	const ctrlc2 = () => {
-		console.log('Closing VS Code forcefully.');
+		console.log("Closing VS Code forcefully.");
 		process.removeListener(SIGINT, ctrlc2);
 		exitRequested = true;
 		killTree(cmd.pid!, true);
@@ -208,15 +227,18 @@ async function innerRunTests(
 			process.on(SIGINT, ctrlc1);
 		}
 
-		cmd.stdout.on('data', (d) => process.stdout.write(d));
-		cmd.stderr.on('data', (d) => process.stderr.write(d));
+		cmd.stdout.on("data", (d) => process.stdout.write(d));
+		cmd.stderr.on("data", (d) => process.stderr.write(d));
 
-		cmd.on('error', function (data) {
-			console.log('Test error: ' + data.toString());
+		cmd.on("error", function (data) {
+			console.log("Test error: " + data.toString());
 		});
 
 		let finished = false;
-		function onProcessClosed(code: number | null, signal: NodeJS.Signals | null): void {
+		function onProcessClosed(
+			code: number | null,
+			signal: NodeJS.Signals | null
+		): void {
 			if (finished) {
 				return;
 			}
@@ -231,15 +253,15 @@ async function innerRunTests(
 			if (code === null) {
 				reject(signal);
 			} else if (code !== 0) {
-				reject('Failed');
+				reject("Failed");
 			} else {
-				console.log('Done\n');
+				console.log("Done\n");
 				resolve(code ?? -1);
 			}
 		}
 
-		cmd.on('close', onProcessClosed);
-		cmd.on('exit', onProcessClosed);
+		cmd.on("close", onProcessClosed);
+		cmd.on("exit", onProcessClosed);
 	});
 
 	let code: number;

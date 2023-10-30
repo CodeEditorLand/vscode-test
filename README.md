@@ -6,22 +6,26 @@ This module helps you test VS Code extensions.
 
 Supported:
 
-- Node >= 16.x
-- Windows >= Windows Server 2012+ / Win10+ (anything with Powershell >= 5.0)
-- macOS
-- Linux
+-   Node >= 16.x
+-   Windows >= Windows Server 2012+ / Win10+ (anything with Powershell >= 5.0)
+-   macOS
+-   Linux
 
 ## Usage
 
-See [./sample](./sample) for a runnable sample, with [Azure DevOps Pipelines](https://github.com/microsoft/vscode-test/blob/master/sample/azure-pipelines.yml) and [Travis CI](https://github.com/microsoft/vscode-test/blob/master/.travis.yml) configuration.
+See [./sample](./sample) for a runnable sample, with
+[Azure DevOps Pipelines](https://github.com/microsoft/vscode-test/blob/master/sample/azure-pipelines.yml)
+and
+[Travis CI](https://github.com/microsoft/vscode-test/blob/master/.travis.yml)
+configuration.
 
 ```ts
-import { runTests } from '@vscode/test-electron';
+import { runTests } from "@vscode/test-electron";
 
 async function go() {
 	try {
-		const extensionDevelopmentPath = path.resolve(__dirname, '../../../');
-		const extensionTestsPath = path.resolve(__dirname, './suite');
+		const extensionDevelopmentPath = path.resolve(__dirname, "../../../");
+		const extensionTestsPath = path.resolve(__dirname, "./suite");
 
 		/**
 		 * Basic usage
@@ -31,8 +35,11 @@ async function go() {
 			extensionTestsPath,
 		});
 
-		const extensionTestsPath2 = path.resolve(__dirname, './suite2');
-		const testWorkspace = path.resolve(__dirname, '../../../test-fixtures/fixture1');
+		const extensionTestsPath2 = path.resolve(__dirname, "./suite2");
+		const testWorkspace = path.resolve(
+			__dirname,
+			"../../../test-fixtures/fixture1"
+		);
 
 		/**
 		 * Running another test suite on a specific workspace
@@ -47,7 +54,7 @@ async function go() {
 		 * Use 1.36.1 release for testing
 		 */
 		await runTests({
-			version: '1.36.1',
+			version: "1.36.1",
 			extensionDevelopmentPath,
 			extensionTestsPath,
 			launchArgs: [testWorkspace],
@@ -57,7 +64,7 @@ async function go() {
 		 * Use Insiders release for testing
 		 */
 		await runTests({
-			version: 'insiders',
+			version: "insiders",
 			extensionDevelopmentPath,
 			extensionTestsPath,
 			launchArgs: [testWorkspace],
@@ -66,12 +73,12 @@ async function go() {
 		/**
 		 * Noop, since 1.36.1 already downloaded to .vscode-test/vscode-1.36.1
 		 */
-		await downloadAndUnzipVSCode('1.36.1');
+		await downloadAndUnzipVSCode("1.36.1");
 
 		/**
 		 * Manually download VS Code 1.35.0 release for testing.
 		 */
-		const vscodeExecutablePath = await downloadAndUnzipVSCode('1.35.0');
+		const vscodeExecutablePath = await downloadAndUnzipVSCode("1.35.0");
 		await runTests({
 			vscodeExecutablePath,
 			extensionDevelopmentPath,
@@ -82,11 +89,16 @@ async function go() {
 		/**
 		 * Install Python extension
 		 */
-		const [cli, ...args] = resolveCliArgsFromVSCodeExecutablePath(vscodeExecutablePath);
-		cp.spawnSync(cli, [...args, '--install-extension', 'ms-python.python'], {
-			encoding: 'utf-8',
-			stdio: 'inherit',
-		});
+		const [cli, ...args] =
+			resolveCliArgsFromVSCodeExecutablePath(vscodeExecutablePath);
+		cp.spawnSync(
+			cli,
+			[...args, "--install-extension", "ms-python.python"],
+			{
+				encoding: "utf-8",
+				stdio: "inherit",
+			}
+		);
 
 		/**
 		 * - Add additional launch flags for VS Code
@@ -99,25 +111,25 @@ async function go() {
 			launchArgs: [
 				testWorkspace,
 				// This disables all extensions except the one being tested
-				'--disable-extensions',
+				"--disable-extensions",
 			],
 			// Custom environment variables for extension test script
-			extensionTestsEnv: { foo: 'bar' },
+			extensionTestsEnv: { foo: "bar" },
 		});
 
 		/**
 		 * Use win64 instead of win32 for testing Windows
 		 */
-		if (process.platform === 'win32') {
+		if (process.platform === "win32") {
 			await runTests({
 				extensionDevelopmentPath,
 				extensionTestsPath,
-				version: '1.40.0',
-				platform: 'win32-x64-archive',
+				version: "1.40.0",
+				platform: "win32-x64-archive",
 			});
 		}
 	} catch (err) {
-		console.error('Failed to run tests');
+		console.error("Failed to run tests");
 		process.exit(1);
 	}
 }
@@ -127,10 +139,11 @@ go();
 
 ## Development
 
-- `yarn install`
-- Make necessary changes in [`lib`](./lib)
-- `yarn compile` (or `yarn watch`)
-- In [`sample`](./sample), run `yarn install`, `yarn compile` and `yarn test` to make sure integration test can run successfully
+-   `yarn install`
+-   Make necessary changes in [`lib`](./lib)
+-   `yarn compile` (or `yarn watch`)
+-   In [`sample`](./sample), run `yarn install`, `yarn compile` and `yarn test`
+    to make sure integration test can run successfully
 
 ## License
 
@@ -138,14 +151,19 @@ go();
 
 ## Contributing
 
-This project welcomes contributions and suggestions. Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
+This project welcomes contributions and suggestions. Most contributions require
+you to agree to a Contributor License Agreement (CLA) declaring that you have
+the right to, and actually do, grant us the rights to use your contribution. For
+details, visit https://cla.microsoft.com.
 
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+When you submit a pull request, a CLA-bot will automatically determine whether
+you need to provide a CLA and decorate the PR appropriately (e.g., label,
+comment). Simply follow the instructions provided by the bot. You will only need
+to do this once across all repos using our CLA.
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+This project has adopted the
+[Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the
+[Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any
+additional questions or comments.

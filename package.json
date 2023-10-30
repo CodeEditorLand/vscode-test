@@ -1,67 +1,67 @@
 {
-  "name": "@vscode/test-electron",
-  "version": "0.0.1",
-  "private": "false",
-  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
-  "bugs": {
-    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
-  },
-  "license": "MIT",
-  "author": {
-    "name": "Nikola Hristov",
-    "email": "nikola@nikolahristov.tech",
-    "url": "https://nikolahristov.tech"
-  },
-  "publisher": "playform",
-  "type": "module",
-  "main": "./out/index.js",
-  "scripts": {
-    "compile": "tsc -p ./",
-    "fmt": "prettier --write \"lib/**/*.ts\" \"*.md\"",
-    "prepack": "tsc -p ./",
-    "prepare": "husky install",
-    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts",
-    "test": "eslint lib --ext ts && vitest && tsc --noEmit",
-    "watch": "tsc -w -p ./"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.md": [
-      "prettier --write"
-    ]
-  },
-  "dependencies": {
-    "http-proxy-agent": "7.0.0",
-    "https-proxy-agent": "7.0.2",
-    "jszip": "3.10.1",
-    "semver": "7.5.4"
-  },
-  "devDependencies": {
-    "@types/node": "20",
-    "@types/rimraf": "3.0.2",
-    "@types/semver": "7.5.4",
-    "@typescript-eslint/eslint-plugin": "6.9.0",
-    "@typescript-eslint/parser": "6.9.0",
-    "eslint": "8.52.0",
-    "eslint-plugin-header": "3.1.1",
-    "husky": "8.0.3",
-    "lint-staged": "15.0.2",
-    "prettier": "3.0.3",
-    "typescript": "5.2.2",
-    "typescript-esbuild": "0.3.1",
-    "vitest": "0.34.6"
-  },
-  "engines": {
-    "node": ">=16"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@vscode/test-electron",
+	"version": "0.0.1",
+	"private": "false",
+	"homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
+	"bugs": {
+		"url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Nikola Hristov",
+		"email": "nikola@nikolahristov.tech",
+		"url": "https://nikolahristov.tech"
+	},
+	"publisher": "playform",
+	"type": "module",
+	"main": "./out/index.js",
+	"scripts": {
+		"compile": "tsc -p ./",
+		"fmt": "prettier --write \"lib/**/*.ts\" \"*.md\"",
+		"prepack": "tsc -p ./",
+		"prepare": "husky install",
+		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
+		"test": "eslint lib --ext ts && vitest && tsc --noEmit",
+		"watch": "tsc -w -p ./"
+	},
+	"lint-staged": {
+		"*.ts": [
+			"eslint --fix",
+			"prettier --write"
+		],
+		"*.md": [
+			"prettier --write"
+		]
+	},
+	"dependencies": {
+		"http-proxy-agent": "7.0.0",
+		"https-proxy-agent": "7.0.2",
+		"jszip": "3.10.1",
+		"semver": "7.5.4"
+	},
+	"devDependencies": {
+		"@types/node": "20",
+		"@types/rimraf": "3.0.2",
+		"@types/semver": "7.5.4",
+		"@typescript-eslint/eslint-plugin": "6.9.0",
+		"@typescript-eslint/parser": "6.9.0",
+		"eslint": "8.52.0",
+		"eslint-plugin-header": "3.1.1",
+		"husky": "8.0.3",
+		"lint-staged": "15.0.2",
+		"prettier": "3.0.3",
+		"typescript": "5.2.2",
+		"typescript-esbuild": "0.3.1",
+		"vitest": "0.34.6"
+	},
+	"engines": {
+		"node": ">=16"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }
