@@ -6,25 +6,25 @@
 /** Stages of progress while downloading VS Code */
 export enum ProgressReportStage {
 	/** Initial fetch of the latest version if not explicitly given */
-	FetchingVersion = "fetchingVersion",
+	FetchingVersion = 'fetchingVersion',
 	/** Always fired when the version is determined. */
-	ResolvedVersion = "resolvedVersion",
+	ResolvedVersion = 'resolvedVersion',
 	/** Fired before fetching info about the latest Insiders version, when requesting insiders builds */
-	FetchingInsidersMetadata = "fetchingInsidersMetadata",
+	FetchingInsidersMetadata = 'fetchingInsidersMetadata',
 	/** Fired if the current Insiders is out of date */
-	ReplacingOldInsiders = "replacingOldInsiders",
+	ReplacingOldInsiders = 'replacingOldInsiders',
 	/** Fired when an existing install is found which does not require a download */
-	FoundMatchingInstall = "foundMatchingInstall",
+	FoundMatchingInstall = 'foundMatchingInstall',
 	/** Fired before the URL to the download zip or tarball is looked up */
-	ResolvingCDNLocation = "resolvingCDNLocation",
+	ResolvingCDNLocation = 'resolvingCDNLocation',
 	/** Fired continuously while a download happens */
-	Downloading = "downloading",
+	Downloading = 'downloading',
 	/** Fired when the command is issued to do a synchronous extraction. May not fire depending on the platform and options. */
-	ExtractingSynchonrously = "extractingSynchonrously",
+	ExtractingSynchonrously = 'extractingSynchonrously',
 	/** Fired when the download fails and a retry will be attempted */
-	Retrying = "retrying",
+	Retrying = 'retrying',
 	/** Fired after folder is downloaded and unzipped */
-	NewInstallComplete = "newInstallComplete",
+	NewInstallComplete = 'newInstallComplete',
 }
 
 export type ProgressReport =
@@ -39,23 +39,10 @@ export type ProgressReport =
 			newHash: string;
 			newDate: Date;
 	  }
-	| {
-			stage: ProgressReportStage.FoundMatchingInstall;
-			downloadedPath: string;
-	  }
+	| { stage: ProgressReportStage.FoundMatchingInstall; downloadedPath: string }
 	| { stage: ProgressReportStage.ResolvingCDNLocation; url: string }
-	| {
-			stage: ProgressReportStage.Downloading;
-			url: string;
-			totalBytes: number;
-			bytesSoFar: number;
-	  }
-	| {
-			stage: ProgressReportStage.Retrying;
-			error: Error;
-			attempt: number;
-			totalAttempts: number;
-	  }
+	| { stage: ProgressReportStage.Downloading; url: string; totalBytes: number; bytesSoFar: number }
+	| { stage: ProgressReportStage.Retrying; error: Error; attempt: number; totalAttempts: number }
 	| { stage: ProgressReportStage.ExtractingSynchonrously }
 	| { stage: ProgressReportStage.NewInstallComplete; downloadedPath: string };
 
@@ -81,11 +68,7 @@ export class ConsoleReporter implements ProgressReporter {
 
 	private downloadReport?: {
 		timeout: NodeJS.Timeout;
-		report: {
-			stage: ProgressReportStage.Downloading;
-			totalBytes: number;
-			bytesSoFar: number;
-		};
+		report: { stage: ProgressReportStage.Downloading; totalBytes: number; bytesSoFar: number };
 	};
 
 	constructor(private readonly showDownloadProgress: boolean) {}
@@ -96,34 +79,21 @@ export class ConsoleReporter implements ProgressReporter {
 				this.version = report.version;
 				break;
 			case ProgressReportStage.ReplacingOldInsiders:
-				console.log(
-					`Removing outdated Insiders at ${report.downloadedPath} and re-downloading.`
-				);
-				console.log(
-					`Old: ${report.oldHash} | ${report.oldDate.toISOString()}`
-				);
-				console.log(
-					`New: ${report.newHash} | ${report.newDate.toISOString()}`
-				);
+				console.log(`Removing outdated Insiders at ${report.downloadedPath} and re-downloading.`);
+				console.log(`Old: ${report.oldHash} | ${report.oldDate.toISOString()}`);
+				console.log(`New: ${report.newHash} | ${report.newDate.toISOString()}`);
 				break;
 			case ProgressReportStage.FoundMatchingInstall:
-				console.log(
-					`Found existing install in ${report.downloadedPath}. Skipping download`
-				);
+				console.log(`Found existing install in ${report.downloadedPath}. Skipping download`);
 				break;
 			case ProgressReportStage.ResolvingCDNLocation:
-				console.log(
-					`Downloading VS Code ${this.version} from ${report.url}`
-				);
+				console.log(`Downloading VS Code ${this.version} from ${report.url}`);
 				break;
 			case ProgressReportStage.Downloading:
 				if (!this.showDownloadProgress && report.bytesSoFar === 0) {
 					console.log(`Downloading VS Code (${report.totalBytes}B)`);
 				} else if (!this.downloadReport) {
-					this.downloadReport = {
-						timeout: setTimeout(() => this.reportDownload(), 100),
-						report,
-					};
+					this.downloadReport = { timeout: setTimeout(() => this.reportDownload(), 100), report };
 				} else {
 					this.downloadReport.report = report;
 				}
@@ -148,7 +118,7 @@ export class ConsoleReporter implements ProgressReporter {
 	private flushDownloadReport() {
 		if (this.showDownloadProgress) {
 			this.reportDownload();
-			console.log("");
+			console.log('');
 		}
 	}
 
@@ -163,12 +133,7 @@ export class ConsoleReporter implements ProgressReporter {
 		const percent = Math.max(0, Math.min(1, bytesSoFar / totalBytes));
 		const progressBarSize = 30;
 		const barTicks = Math.floor(percent * progressBarSize);
-		const progressBar =
-			"=".repeat(barTicks) + "-".repeat(progressBarSize - barTicks);
-		process.stdout.write(
-			`\x1b[G\x1b[0KDownloading VS Code [${progressBar}] ${(
-				percent * 100
-			).toFixed()}%`
-		);
+		const progressBar = '='.repeat(barTicks) + '-'.repeat(progressBarSize - barTicks);
+		process.stdout.write(`\x1b[G\x1b[0KDownloading VS Code [${progressBar}] ${(percent * 100).toFixed()}%`);
 	}
 }
