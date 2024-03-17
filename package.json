@@ -1,23 +1,24 @@
 {
-  "name": "@vscode/test-electron",
-  "version": "2.3.9",
+  "author": "Visual Studio Code Team",
   "bugs": {
     "url": "https://github.com/Microsoft/vscode-test/issues"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Microsoft/vscode-test.git"
+  "dependencies": {
+    "http-proxy-agent": "4.0.1",
+    "https-proxy-agent": "5.0.0",
+    "jszip": "3.10.1",
+    "semver": "7.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "18",
+    "@types/rimraf": "3.0.0",
+    "@types/semver": "7.3.13",
+    "husky": "8.0.3",
+    "lint-staged": "13.1.2",
+    "typescript": "4.3.5",
+    "vitest": "0.10.2"
   },
   "license": "MIT",
-  "author": "Visual Studio Code Team",
-  "main": "./out/index.js",
-  "scripts": {
-    "compile": "tsc -p ./",
-    "fmt": "prettier --write \"lib/**/*.ts\" \"*.md\"",
-    "prepack": "tsc -p ./",
-    "prepare": "husky install",
-    "watch": "tsc -w -p ./"
-  },
   "lint-staged": {
     "*.md": [
       "prettier --write"
@@ -27,19 +28,18 @@
       "prettier --write"
     ]
   },
-  "dependencies": {
-    "http-proxy-agent": "^4.0.1",
-    "https-proxy-agent": "^5.0.0",
-    "jszip": "^3.10.1",
-    "semver": "^7.5.2"
+  "main": "./out/index.js",
+  "name": "@vscode/test-electron",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/vscode-test.git"
   },
-  "devDependencies": {
-    "@types/node": "^18",
-    "@types/rimraf": "^3.0.0",
-    "@types/semver": "^7.3.13",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.1.2",
-    "typescript": "^4.3.5",
-    "vitest": "^0.10.2"
-  }
+  "scripts": {
+    "compile": "tsc -p ./",
+    "fmt": "prettier --write \"lib/**/*.ts\" \"*.md\"",
+    "prepack": "tsc -p ./",
+    "prepare": "husky install",
+    "watch": "tsc -w -p ./"
+  },
+  "version": "2.3.9"
 }
