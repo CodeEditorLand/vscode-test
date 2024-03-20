@@ -1,18 +1,31 @@
 {
 	"name": "vscode-test-sample",
 	"displayName": "vscode-test-sample",
-	"description": "",
 	"version": "0.0.1",
-	"engines": {
-		"vscode": "1.32.0"
+	"private": false,
+	"description": "",
+	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
+	"bugs": {
+		"url": "https://github.com/CodeEditorLand/Foundation/issues"
 	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:extension.helloWorld"
-	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "Playform",
+		"email": "Hello@Playform.Cloud",
+		"url": "https://playform.cloud"
+	},
+	"type": "module",
 	"main": "./out/src/extension.js",
+	"scripts": {
+		"compile": "tsc -p ./",
+		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
+		"vscode:prepublish": "yarn run compile",
+		"watch": "tsc -watch -p ./"
+	},
 	"contributes": {
 		"commands": [
 			{
@@ -21,12 +34,10 @@
 			}
 		]
 	},
-	"scripts": {
-		"vscode:prepublish": "yarn run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"test": "cd .. && tsc && cd sample && tsc && node ./out/test/runTest.js"
-	},
+	"activationEvents": [
+		"onCommand:extension.helloWorld"
+	],
+	"dependencies": {},
 	"devDependencies": {
 		"@types/glob": "8.1.0",
 		"@types/mocha": "10.0.6",
@@ -34,7 +45,10 @@
 		"@types/vscode": "1.87.0",
 		"glob": "10.3.10",
 		"mocha": "10.3.0",
-		"typescript": "5.4.2"
+		"typescript": "5.4.2",
+		"typescript-esbuild": "latest"
 	},
-	"dependencies": {}
+	"publishConfig": {
+		"access": "public"
+	}
 }

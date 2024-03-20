@@ -1,54 +1,56 @@
 {
-  "name": "@vscode/test-electron",
-  "version": "2.3.9",
-  "scripts": {
-    "compile": "tsc -p ./",
-    "watch": "tsc -w -p ./",
-    "prepack": "tsc -p ./",
-    "fmt": "prettier --write \"lib/**/*.ts\" \"*.md\"",
-    "test": "eslint lib --ext ts && vitest && tsc --noEmit",
-    "prepare": "husky install"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.md": [
-      "prettier --write"
-    ]
-  },
-  "main": "./out/index.js",
-  "engines": {
-    "node": ">=16"
-  },
-  "dependencies": {
-    "http-proxy-agent": "7.0.2",
-    "https-proxy-agent": "7.0.4",
-    "jszip": "3.10.1",
-    "semver": "7.6.0"
-  },
-  "devDependencies": {
-    "@types/node": "20",
-    "@types/rimraf": "3.0.2",
-    "@types/semver": "7.5.8",
-    "@typescript-eslint/eslint-plugin": "7.3.1",
-    "@typescript-eslint/parser": "7.3.1",
-    "eslint": "8.57.0",
-    "eslint-plugin-header": "3.1.1",
-    "husky": "9.0.11",
-    "lint-staged": "15.2.2",
-    "prettier": "3.2.5",
-    "typescript": "5.4.2",
-    "vitest": "1.4.0"
-  },
-  "license": "MIT",
-  "author": "Visual Studio Code Team",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Microsoft/vscode-test.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Microsoft/vscode-test/issues"
-  }
+	"name": "@vscode/test-electron",
+	"version": "0.0.1",
+	"private": false,
+	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
+	"bugs": {
+		"url": "https://github.com/CodeEditorLand/Foundation/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "Playform",
+		"email": "Hello@Playform.Cloud",
+		"url": "https://playform.cloud"
+	},
+	"type": "module",
+	"main": "./out/index.js",
+	"scripts": {
+		"compile": "tsc -p ./",
+		"prepack": "tsc -p ./",
+		"prepare": "husky install",
+		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
+		"watch": "tsc -w -p ./"
+	},
+	"lint-staged": {
+		"*.md": [
+			"prettier --write"
+		],
+		"*.ts": [
+			"eslint --fix",
+			"prettier --write"
+		]
+	},
+	"dependencies": {
+		"http-proxy-agent": "7.0.2",
+		"https-proxy-agent": "7.0.4",
+		"jszip": "3.10.1",
+		"semver": "7.6.0"
+	},
+	"devDependencies": {
+		"@types/node": "20",
+		"@types/rimraf": "3.0.2",
+		"@types/semver": "7.5.8",
+		"husky": "9.0.11",
+		"lint-staged": "15.2.2",
+		"typescript": "5.4.2",
+		"typescript-esbuild": "latest",
+		"vitest": "1.4.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }
