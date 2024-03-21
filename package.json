@@ -47,7 +47,7 @@
 		"husky": "9.0.11",
 		"lint-staged": "15.2.2",
 		"typescript": "5.4.2",
-		"typescript-esbuild": "latest",
+		"typescript-esbuild": "0.4.5",
 		"vitest": "1.4.0"
 	},
 	"publishConfig": {
