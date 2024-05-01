@@ -1,11 +1,41 @@
 {
-	"author": {
-		"email": "Land@PlayForm.Cloud",
-		"name": "🌆 — Land —",
-		"url": "HTTPS://Land.PlayForm.Cloud"
-	},
+	"name": "@vscode/test-electron",
+	"version": "0.0.1",
+	"private": false,
+	"keywords": [
+		"land"
+	],
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandTest#readme",
 	"bugs": {
 		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandTest/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+HTTPS://github.com/CodeEditorLand/LandTest.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "🌆 — Land —",
+		"email": "Land@PlayForm.Cloud",
+		"url": "HTTPS://Land.PlayForm.Cloud"
+	},
+	"type": "module",
+	"main": "./out/index.js",
+	"scripts": {
+		"Document": "Document 'Source/**/*.ts'",
+		"compile": "tsc -p ./",
+		"prepack": "tsc -p ./",
+		"prepare": "husky install",
+		"prepublishOnly": "Build 'Source/**/*.ts'"
+	},
+	"lint-staged": {
+		"*.md": [
+			"prettier --write"
+		],
+		"*.ts": [
+			"eslint --fix",
+			"prettier --write"
+		]
 	},
 	"dependencies": {
 		"http-proxy-agent": "7.0.2",
@@ -21,37 +51,7 @@
 		"@types/semver": "7.5.8",
 		"lint-staged": "15.2.2"
 	},
-	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandTest#readme",
-	"keywords": [
-		"land"
-	],
-	"license": "SEE LICENSE IN LICENSE",
-	"lint-staged": {
-		"*.md": [
-			"prettier --write"
-		],
-		"*.ts": [
-			"eslint --fix",
-			"prettier --write"
-		]
-	},
-	"main": "./out/index.js",
-	"name": "@vscode/test-electron",
-	"private": false,
 	"publishConfig": {
 		"access": "public"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+HTTPS://github.com/CodeEditorLand/LandTest.git"
-	},
-	"scripts": {
-		"Document": "Document 'Source/**/*.ts'",
-		"compile": "tsc -p ./",
-		"prepack": "tsc -p ./",
-		"prepare": "husky install",
-		"prepublishOnly": "Build 'Source/**/*.ts'"
-	},
-	"type": "module",
-	"version": "0.0.1"
+	}
 }

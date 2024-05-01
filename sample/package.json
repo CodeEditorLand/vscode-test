@@ -1,14 +1,32 @@
 {
-	"activationEvents": [
-		"onCommand:extension.helloWorld"
+	"name": "vscode-test-sample",
+	"displayName": "vscode-test-sample",
+	"version": "0.0.1",
+	"private": false,
+	"description": "",
+	"keywords": [
+		"land"
 	],
-	"author": {
-		"email": "Land@PlayForm.Cloud",
-		"name": "🌆 — Land —",
-		"url": "HTTPS://Land.PlayForm.Cloud"
-	},
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandTest#readme",
 	"bugs": {
 		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandTest/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+HTTPS://github.com/CodeEditorLand/LandTest.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "🌆 — Land —",
+		"email": "Land@PlayForm.Cloud",
+		"url": "HTTPS://Land.PlayForm.Cloud"
+	},
+	"type": "module",
+	"main": "./out/src/extension.js",
+	"scripts": {
+		"Document": "Document 'Source/**/*.ts'",
+		"compile": "tsc -p ./",
+		"prepublishOnly": "Build 'Source/**/*.ts'"
 	},
 	"contributes": {
 		"commands": [
@@ -18,35 +36,17 @@
 			}
 		]
 	},
+	"activationEvents": [
+		"onCommand:extension.helloWorld"
+	],
 	"dependencies": {},
-	"description": "",
 	"devDependencies": {
 		"@playform/build": "0.0.7",
 		"@playform/document": "0.0.6",
 		"@types/node": "20",
 		"glob": "10.3.12"
 	},
-	"displayName": "vscode-test-sample",
-	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandTest#readme",
-	"keywords": [
-		"land"
-	],
-	"license": "SEE LICENSE IN LICENSE",
-	"main": "./out/src/extension.js",
-	"name": "vscode-test-sample",
-	"private": false,
 	"publishConfig": {
 		"access": "public"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+HTTPS://github.com/CodeEditorLand/LandTest.git"
-	},
-	"scripts": {
-		"Document": "Document 'Source/**/*.ts'",
-		"compile": "tsc -p ./",
-		"prepublishOnly": "Build 'Source/**/*.ts'"
-	},
-	"type": "module",
-	"version": "0.0.1"
+	}
 }
