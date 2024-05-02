@@ -1,6 +1,0 @@
-.vscode
-.npmignore
-lib/
-sample/
-tsconfig.json
-tslint.json
