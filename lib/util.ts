@@ -6,14 +6,14 @@
 import { ChildProcess, SpawnOptions, spawn } from 'child_process';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
-import * as createHttpProxyAgent from 'http-proxy-agent';
+import { HttpProxyAgent } from 'http-proxy-agent';
 import * as https from 'https';
-import * as createHttpsProxyAgent from 'https-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import * as path from 'path';
 import { URL } from 'url';
-import { DownloadOptions, DownloadPlatform, downloadAndUnzipVSCode } from './download';
+import { DownloadOptions, DownloadPlatform, defaultCachePath, downloadAndUnzipVSCode } from './download';
 import * as request from './request';
-import { TestOptions, getProfileArguments } from './runTest';
+import { TestOptions } from './runTest';
 
 export let systemDefaultPlatform: DownloadPlatform;
 
@@ -32,36 +32,59 @@ switch (process.platform) {
 			process.arch === 'arm64' ? 'linux-arm64' : process.arch === 'arm' ? 'linux-armhf' : 'linux-x64';
 }
 
-export function isInsiderVersionIdentifier(version: string): boolean {
-	return version === 'insiders' || version.endsWith('-insider'); // insider or 1.2.3-insider version string
-}
+const UNRELEASED_SUFFIX = '-unreleased';
 
-export function isStableVersionIdentifier(version: string): boolean {
-	return version === 'stable' || /^[0-9]+\.[0-9]+\.[0-9]$/.test(version); // stable or 1.2.3 version string
-}
+export class Version {
+	public static parse(version: string): Version {
+		const unreleased = version.endsWith(UNRELEASED_SUFFIX);
+		if (unreleased) {
+			version = version.slice(0, -UNRELEASED_SUFFIX.length);
+		}
 
-export function getVSCodeDownloadUrl(version: string, platform = systemDefaultPlatform) {
-	if (version === 'insiders') {
-		return `https://update.code.visualstudio.com/latest/${platform}/insider`;
-	} else if (isInsiderVersionIdentifier(version)) {
-		return `https://update.code.visualstudio.com/${version}/${platform}/insider`;
-	} else if (isStableVersionIdentifier(version)) {
-		return `https://update.code.visualstudio.com/${version}/${platform}/stable`;
-	} else {
-		// insiders commit hash
-		return `https://update.code.visualstudio.com/commit:${version}/${platform}/insider`;
+		return new Version(version, !unreleased);
+	}
+
+	constructor(public readonly id: string, public readonly isReleased = true) {}
+
+	public get isCommit() {
+		return /^[0-9a-f]{40}$/.test(this.id);
+	}
+
+	public get isInsiders() {
+		return this.id === 'insiders' || this.id.endsWith('-insider');
+	}
+
+	public get isStable() {
+		return this.id === 'stable' || /^[0-9]+\.[0-9]+\.[0-9]$/.test(this.id);
+	}
+
+	public toString() {
+		return this.id + (this.isReleased ? '' : UNRELEASED_SUFFIX);
 	}
 }
 
-let PROXY_AGENT: createHttpProxyAgent.HttpProxyAgent | undefined = undefined;
-let HTTPS_PROXY_AGENT: createHttpsProxyAgent.HttpsProxyAgent | undefined = undefined;
+export function getVSCodeDownloadUrl(version: Version, platform: string) {
+	if (version.id === 'insiders') {
+		return `https://update.code.visualstudio.com/latest/${platform}/insider?released=${version.isReleased}`;
+	} else if (version.isInsiders) {
+		return `https://update.code.visualstudio.com/${version.id}/${platform}/insider?released=${version.isReleased}`;
+	} else if (version.isStable) {
+		return `https://update.code.visualstudio.com/${version.id}/${platform}/stable?released=${version.isReleased}`;
+	} else {
+		// insiders commit hash
+		return `https://update.code.visualstudio.com/commit:${version.id}/${platform}/insider`;
+	}
+}
+
+let PROXY_AGENT: HttpProxyAgent<string> | undefined = undefined;
+let HTTPS_PROXY_AGENT: HttpsProxyAgent<string> | undefined = undefined;
 
 if (process.env.npm_config_proxy) {
-	PROXY_AGENT = createHttpProxyAgent(process.env.npm_config_proxy);
-	HTTPS_PROXY_AGENT = createHttpsProxyAgent(process.env.npm_config_proxy);
+	PROXY_AGENT = new HttpProxyAgent(process.env.npm_config_proxy);
+	HTTPS_PROXY_AGENT = new HttpsProxyAgent(process.env.npm_config_proxy);
 }
 if (process.env.npm_config_https_proxy) {
-	HTTPS_PROXY_AGENT = createHttpsProxyAgent(process.env.npm_config_https_proxy);
+	HTTPS_PROXY_AGENT = new HttpsProxyAgent(process.env.npm_config_https_proxy);
 }
 
 export function urlToOptions(url: string): https.RequestOptions {
@@ -126,13 +149,13 @@ export interface IUpdateMetadata {
 	supportsFastUpdate: boolean;
 }
 
-export async function getInsidersVersionMetadata(platform: string, version: string) {
-	const remoteUrl = `https://update.code.visualstudio.com/api/versions/${version}/${platform}/insider`;
+export async function getInsidersVersionMetadata(platform: string, version: string, released: boolean) {
+	const remoteUrl = `https://update.code.visualstudio.com/api/versions/${version}/${platform}/insider?released=${released}`;
 	return await request.getJSON<IUpdateMetadata>(remoteUrl, 30_000);
 }
 
-export async function getLatestInsidersMetadata(platform: string) {
-	const remoteUrl = `https://update.code.visualstudio.com/api/update/${platform}/insider/latest`;
+export async function getLatestInsidersMetadata(platform: string, released: boolean) {
+	const remoteUrl = `https://update.code.visualstudio.com/api/update/${platform}/insider/latest?released=${released}`;
 	return await request.getJSON<IUpdateMetadata>(remoteUrl, 30_000);
 }
 
@@ -196,7 +219,39 @@ export function resolveCliArgsFromVSCodeExecutablePath(
 	return args;
 }
 
-export type RunVSCodeCommandOptions = Partial<DownloadOptions> & { spawn?: SpawnOptions };
+export interface RunVSCodeCommandOptions extends Partial<DownloadOptions> {
+	/**
+	 * Additional options to pass to `child_process.spawn`
+	 */
+	spawn?: SpawnOptions;
+
+	/**
+	 * Whether VS Code should be launched using default settings and extensions
+	 * installed on this machine. If `false`, then separate directories will be
+	 * used inside the `.vscode-test` folder within the project.
+	 *
+	 * Defaults to `false`.
+	 */
+	reuseMachineInstall?: boolean;
+}
+
+/** Adds the extensions and user data dir to the arguments for the VS Code CLI */
+export function getProfileArguments(args: readonly string[]) {
+	const out: string[] = [];
+	if (!hasArg('extensions-dir', args)) {
+		out.push(`--extensions-dir=${path.join(defaultCachePath, 'extensions')}`);
+	}
+
+	if (!hasArg('user-data-dir', args)) {
+		out.push(`--user-data-dir=${path.join(defaultCachePath, 'user-data')}`);
+	}
+
+	return out;
+}
+
+export function hasArg(argName: string, argList: readonly string[]) {
+	return argList.some((a) => a === `--${argName}` || a.startsWith(`--${argName}=`));
+}
 
 export class VSCodeCommandError extends Error {
 	constructor(
@@ -210,20 +265,30 @@ export class VSCodeCommandError extends Error {
 }
 
 /**
- * Runs a VS Code command, and returns its output
+ * Runs a VS Code command, and returns its output.
+ *
  * @throws a {@link VSCodeCommandError} if the command fails
  */
-export async function runVSCodeCommand(args: string[], options: RunVSCodeCommandOptions = {}) {
-	const vscodeExecutablePath = await downloadAndUnzipVSCode(options);
-	const [cli, ...baseArgs] = resolveCliArgsFromVSCodeExecutablePath(vscodeExecutablePath);
+export async function runVSCodeCommand(_args: readonly string[], options: RunVSCodeCommandOptions = {}) {
+	const args = _args.slice();
 
-	const shell = process.platform === 'win32';
+	let executable = await downloadAndUnzipVSCode(options);
+	let shell = false;
+	if (!options.reuseMachineInstall) {
+		args.push(...getProfileArguments(args));
+	}
+
+	// Unless the user is manually running tests or extension development, then resolve to the CLI script
+	if (!hasArg('extensionTestsPath', args) && !hasArg('extensionDevelopmentPath', args)) {
+		executable = resolveCliPathFromVSCodeExecutablePath(executable, options?.platform ?? systemDefaultPlatform);
+		shell = process.platform === 'win32'; // CVE-2024-27980
+	}
 
 	return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
 		let stdout = '';
 		let stderr = '';
 
-		const child = spawn(shell ? `"${cli}"` : cli, [...baseArgs, ...args], {
+		const child = spawn(shell ? `"${executable}"` : executable, args, {
 			stdio: 'pipe',
 			shell,
 			windowsHide: true,
