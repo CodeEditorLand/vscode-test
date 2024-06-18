@@ -4,7 +4,7 @@
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
-		"vscode": "^1.32.0"
+		"vscode": "1.32.0"
 	},
 	"categories": [
 		"Other"
@@ -28,12 +28,12 @@
 		"test": "cd .. && tsc && cd sample && tsc && node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/mocha": "^8.2.0",
-		"@types/node": "^18",
-		"@types/vscode": "^1.52.0",
-		"glob": "^10.3.10",
-		"mocha": "^8.2.1",
-		"typescript": "^5.4.5"
+		"@types/mocha": "10.0.6",
+		"@types/node": "20",
+		"@types/vscode": "1.90.0",
+		"glob": "10.4.1",
+		"mocha": "10.4.0",
+		"typescript": "5.4.5"
 	},
 	"dependencies": {}
 }
