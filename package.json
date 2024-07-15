@@ -1,4 +1,20 @@
 {
+	"name": "@vscode/test-electron",
+	"main": "./out/index.js",
+	"scripts": {
+		"compile": "tsc -p ./",
+		"prepack": "tsc -p ./",
+		"prepare": "husky install"
+	},
+	"lint-staged": {
+		"*.md": [
+			"prettier --write"
+		],
+		"*.ts": [
+			"eslint --fix",
+			"prettier --write"
+		]
+	},
 	"dependencies": {
 		"http-proxy-agent": "^7.0.2",
 		"https-proxy-agent": "^7.0.5",
@@ -11,21 +27,5 @@
 		"@types/rimraf": "^3.0.2",
 		"@types/semver": "^7.5.8",
 		"lint-staged": "^15.2.7"
-	},
-	"lint-staged": {
-		"*.md": [
-			"prettier --write"
-		],
-		"*.ts": [
-			"eslint --fix",
-			"prettier --write"
-		]
-	},
-	"main": "./out/index.js",
-	"name": "@vscode/test-electron",
-	"scripts": {
-		"compile": "tsc -p ./",
-		"prepack": "tsc -p ./",
-		"prepare": "husky install"
 	}
 }
