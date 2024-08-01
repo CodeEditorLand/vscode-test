@@ -13,8 +13,8 @@
 	"dependencies": {},
 	"description": "",
 	"devDependencies": {
-		"@types/node": "18",
-		"glob": "10.3.10"
+		"@types/node": "22",
+		"glob": "11.0.0"
 	},
 	"displayName": "vscode-test-sample",
 	"main": "./out/src/extension.js",
