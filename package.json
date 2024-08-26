@@ -3,7 +3,7 @@
 		"http-proxy-agent": "7.0.2",
 		"https-proxy-agent": "7.0.5",
 		"jszip": "3.10.1",
-		"ora": "8.0.1",
+		"ora": "8.1.0",
 		"semver": "7.6.3"
 	},
 	"devDependencies": {
