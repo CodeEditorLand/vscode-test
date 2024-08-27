@@ -14,7 +14,7 @@ Supported:
 -   macOS
 -   Linux
 
-## Usage
+## 🛠️ Usage
 
 See [./sample](./sample) for a runnable sample, with
 [Azure DevOps Pipelines](https://github.com/microsoft/vscode-test/blob/main/sample/azure-pipelines.yml)
