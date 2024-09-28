@@ -2,10 +2,17 @@
 	"name": "vscode-test-sample",
 	"displayName": "vscode-test-sample",
 	"description": "",
-	"main": "./out/src/extension.js",
-	"scripts": {
-		"compile": "tsc -p ./"
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.32.0"
 	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:extension.helloWorld"
+	],
+	"main": "./out/src/extension.js",
 	"contributes": {
 		"commands": [
 			{
@@ -14,12 +21,19 @@
 			}
 		]
 	},
-	"activationEvents": [
-		"onCommand:extension.helloWorld"
-	],
-	"dependencies": {},
+	"scripts": {
+		"vscode:prepublish": "yarn run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"test": "cd .. && tsc && cd sample && tsc && node ./out/test/runTest.js"
+	},
 	"devDependencies": {
-		"@types/node": "22",
-		"glob": "11.0.0"
-	}
+		"@types/mocha": "^8.2.0",
+		"@types/node": "^18",
+		"@types/vscode": "^1.52.0",
+		"glob": "^10.3.10",
+		"mocha": "^8.2.1",
+		"typescript": "^5.4.5"
+	},
+	"dependencies": {}
 }
