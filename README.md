@@ -2,18 +2,25 @@
 
 ![Test Status Badge](https://github.com/microsoft/vscode-test/workflows/Tests/badge.svg)
 
-This module helps you test VS Code extensions. Note that new extensions may want to use the [VS Code Test CLI](https://github.com/microsoft/vscode-test-cli/blob/main/README.md), which leverages this module, for a richer editing and execution experience.
+This module helps you test VS Code extensions. Note that new extensions may want
+to use the
+[VS Code Test CLI](https://github.com/microsoft/vscode-test-cli/blob/main/README.md),
+which leverages this module, for a richer editing and execution experience.
 
 Supported:
 
-- Node >= 16.x
-- Windows >= Windows Server 2012+ / Win10+ (anything with Powershell >= 5.0)
-- macOS
-- Linux
+-   Node >= 16.x
+-   Windows >= Windows Server 2012+ / Win10+ (anything with Powershell >= 5.0)
+-   macOS
+-   Linux
 
 ## Usage
 
-See [./sample](./sample) for a runnable sample, with [Azure DevOps Pipelines](https://github.com/microsoft/vscode-test/blob/main/sample/azure-pipelines.yml) and [Github ACtions](https://github.com/microsoft/vscode-test/blob/main/sample/.travis.yml) configuration.
+See [./sample](./sample) for a runnable sample, with
+[Azure DevOps Pipelines](https://github.com/microsoft/vscode-test/blob/main/sample/azure-pipelines.yml)
+and
+[Github ACtions](https://github.com/microsoft/vscode-test/blob/main/sample/.travis.yml)
+configuration.
 
 ```ts
 import { runTests, runVSCodeCommand, downloadAndUnzipVSCode } from '@vscode/test-electron';
@@ -123,10 +130,11 @@ go();
 
 ## Development
 
-- `yarn install`
-- Make necessary changes in [`lib`](./lib)
-- `yarn compile` (or `yarn watch`)
-- In [`sample`](./sample), run `yarn install`, `yarn compile` and `yarn test` to make sure integration test can run successfully
+-   `yarn install`
+-   Make necessary changes in [`lib`](./lib)
+-   `yarn compile` (or `yarn watch`)
+-   In [`sample`](./sample), run `yarn install`, `yarn compile` and `yarn test`
+    to make sure integration test can run successfully
 
 ## License
 
@@ -134,14 +142,19 @@ go();
 
 ## Contributing
 
-This project welcomes contributions and suggestions. Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
+This project welcomes contributions and suggestions. Most contributions require
+you to agree to a Contributor License Agreement (CLA) declaring that you have
+the right to, and actually do, grant us the rights to use your contribution. For
+details, visit https://cla.microsoft.com.
 
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+When you submit a pull request, a CLA-bot will automatically determine whether
+you need to provide a CLA and decorate the PR appropriately (e.g., label,
+comment). Simply follow the instructions provided by the bot. You will only need
+to do this once across all repos using our CLA.
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+This project has adopted the
+[Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the
+[Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any
+additional questions or comments.
