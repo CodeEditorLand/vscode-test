@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-export { download, downloadAndUnzipVSCode, DownloadOptions } from "./download";
-export { runTests, TestOptions, TestRunFailedError } from "./runTest";
+export { download, downloadAndUnzipVSCode, DownloadOptions } from './download';
+export { runTests, TestOptions, TestRunFailedError } from './runTest';
 export {
 	resolveCliPathFromVSCodeExecutablePath,
 	resolveCliArgsFromVSCodeExecutablePath,
 	runVSCodeCommand,
 	VSCodeCommandError,
 	RunVSCodeCommandOptions,
-} from "./util";
-export * from "./progress.js";
+} from './util';
+export * from './progress.js';
