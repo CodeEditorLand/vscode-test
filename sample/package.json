@@ -1,25 +1,39 @@
 {
-	"activationEvents": [
-		"onCommand:extension.helloWorld"
-	],
-	"contributes": {
-		"commands": [
-			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
-			}
-		]
-	},
-	"dependencies": {},
-	"description": "",
-	"devDependencies": {
-		"@types/node": "22",
-		"glob": "11.0.0"
-	},
-	"displayName": "vscode-test-sample",
-	"main": "./out/src/extension.js",
-	"name": "vscode-test-sample",
-	"scripts": {
-		"compile": "tsc -p ./"
-	}
+  "name": "vscode-test-sample",
+  "displayName": "vscode-test-sample",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.32.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.helloWorld"
+  ],
+  "main": "./out/src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.helloWorld",
+        "title": "Hello World"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "cd .. && tsc && cd sample && tsc && node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^20",
+    "@types/vscode": "^1.52.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.0.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {}
 }
