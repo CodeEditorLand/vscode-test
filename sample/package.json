@@ -1,7 +1,11 @@
 {
-	"activationEvents": [
-		"onCommand:extension.helloWorld"
-	],
+	"name": "vscode-test-sample",
+	"displayName": "vscode-test-sample",
+	"description": "",
+	"main": "./out/src/extension.js",
+	"scripts": {
+		"compile": "tsc -p ./"
+	},
 	"contributes": {
 		"commands": [
 			{
@@ -10,16 +14,12 @@
 			}
 		]
 	},
+	"activationEvents": [
+		"onCommand:extension.helloWorld"
+	],
 	"dependencies": {},
-	"description": "",
 	"devDependencies": {
 		"@types/node": "^22",
 		"glob": "^11.0.0"
-	},
-	"displayName": "vscode-test-sample",
-	"main": "./out/src/extension.js",
-	"name": "vscode-test-sample",
-	"scripts": {
-		"compile": "tsc -p ./"
 	}
 }
