@@ -34,13 +34,16 @@ import {
 } from "./util";
 
 const extensionRoot = process.cwd();
+
 const pipelineAsync = promisify(pipeline);
 
 const vscodeStableReleasesAPI = `https://update.code.visualstudio.com/api/releases/stable`;
+
 const vscodeInsiderReleasesAPI = `https://update.code.visualstudio.com/api/releases/insider`;
 
 const downloadDirNameFormat =
 	/^vscode-(?<platform>[a-z]+)-(?<version>[0-9.]+)$/;
+
 const makeDownloadDirName = (platform: string, version: Version) =>
 	`vscode-${platform}-${version.id}`;
 
@@ -93,6 +96,7 @@ async function fetchTargetStableVersion({
 }: IFetchStableOptions): Promise<Version> {
 	try {
 		const versions = await fetchStableVersions(true, timeout);
+
 		return new Version(versions[0]);
 	} catch (e) {
 		return fallbackToLocalEntries(cachePath, platform, e as Error);
@@ -112,10 +116,13 @@ export async function fetchTargetInferredVersion(
 	const extPaths = Array.isArray(options.extensionsDevelopmentPath)
 		? options.extensionsDevelopmentPath
 		: [options.extensionsDevelopmentPath];
+
 	const maybeExtVersions = await Promise.all(
 		extPaths.map(getEngineVersionFromExtension),
 	);
+
 	const extVersions = maybeExtVersions.filter(isDefined);
+
 	const matches = (v: string) =>
 		!extVersions.some(
 			(range) => !semver.satisfies(v, range, { includePrerelease: true }),
@@ -123,13 +130,17 @@ export async function fetchTargetInferredVersion(
 
 	try {
 		const stable = await fetchStableVersions(true, options.timeout);
+
 		const found1 = stable.find(matches);
+
 		if (found1) {
 			return new Version(found1);
 		}
 
 		const insiders = await fetchInsiderVersions(true, options.timeout);
+
 		const found2 = insiders.find(matches);
+
 		if (found2) {
 			return new Version(found2);
 		}
@@ -157,7 +168,9 @@ async function getEngineVersionFromExtension(
 			path.join(extensionPath, "package.json"),
 			"utf8",
 		);
+
 		const packageJson = JSON.parse(packageContents);
+
 		return packageJson?.engines?.vscode;
 	} catch {
 		return undefined;
@@ -172,6 +185,7 @@ async function fallbackToLocalEntries(
 	const entries = await fs.promises
 		.readdir(cachePath)
 		.catch(() => [] as string[]);
+
 	const [fallbackTo] = entries
 		.map((e) => downloadDirNameFormat.exec(e))
 		.filter(isDefined)
@@ -184,6 +198,7 @@ async function fallbackToLocalEntries(
 			`Error retrieving VS Code versions, using already-installed version ${fallbackTo}`,
 			fromError,
 		);
+
 		return new Version(fallbackTo);
 	}
 
@@ -204,6 +219,7 @@ async function isValidVersion(version: Version, timeout: number) {
 			version.isReleased,
 			timeout,
 		);
+
 		if (stableVersionNumbers.includes(version.id)) {
 			return true;
 		}
@@ -214,6 +230,7 @@ async function isValidVersion(version: Version, timeout: number) {
 			version.isReleased,
 			timeout,
 		);
+
 		if (insiderVersionNumbers.includes(version.id)) {
 			return true;
 		}
@@ -302,6 +319,7 @@ export interface DownloadOptions {
 
 interface IDownload {
 	stream: NodeJS.ReadableStream;
+
 	format: "zip" | "tgz";
 	sha256?: string;
 	length: number;
@@ -336,18 +354,23 @@ async function downloadVSCodeArchive(
 	}
 
 	const timeout = options.timeout!;
+
 	const version = Version.parse(options.version);
+
 	const downloadUrl = getVSCodeDownloadUrl(version, options.platform);
 
 	options.reporter?.report({
 		stage: ProgressReportStage.ResolvingCDNLocation,
 		url: downloadUrl,
 	});
+
 	const res = await request.getStream(downloadUrl, timeout);
+
 	if (res.statusCode !== 302) {
 		throw "Failed to get VS Code archive location";
 	}
 	const url = res.headers.location;
+
 	if (!url) {
 		throw "Failed to get VS Code archive location";
 	}
@@ -356,11 +379,15 @@ async function downloadVSCodeArchive(
 	res.destroy();
 
 	const download = await request.getStream(url, timeout);
+
 	const totalBytes = Number(download.headers["content-length"]);
+
 	const contentDisposition = download.headers["content-disposition"];
+
 	const fileName = contentDisposition
 		? getFilename(contentDisposition)
 		: undefined;
+
 	const isZip = fileName?.endsWith("zip") ?? url.endsWith(".zip");
 
 	const timeoutCtrl = new request.TimeoutController(timeout);
@@ -372,6 +399,7 @@ async function downloadVSCodeArchive(
 	});
 
 	let bytesSoFar = 0;
+
 	download.on("data", (chunk) => {
 		bytesSoFar += chunk.length;
 		timeoutCtrl.touch();
@@ -395,6 +423,7 @@ async function downloadVSCodeArchive(
 
 	timeoutCtrl.signal.addEventListener("abort", () => {
 		download.emit("error", new request.TimeoutError(timeout));
+
 		download.destroy();
 	});
 
@@ -416,6 +445,7 @@ async function unzipVSCode(
 	{ format, stream, length, sha256 }: IDownload,
 ) {
 	const stagingFile = path.join(tmpdir(), `vscode-test-${Date.now()}.zip`);
+
 	const checksum = validateStream(stream, length, sha256);
 
 	if (format === "zip") {
@@ -440,7 +470,9 @@ async function unzipVSCode(
 				// extract file with jszip
 				for (const filename of Object.keys(content.files)) {
 					const file = content.files[filename];
+
 					const filepath = path.join(extractDir, filename);
+
 					if (file.dir) {
 						continue;
 					}
@@ -496,6 +528,7 @@ function spawnDecompressorChild(
 ) {
 	return new Promise<void>((resolve, reject) => {
 		const child = cp.spawn(command, args, { stdio: "pipe" });
+
 		if (input) {
 			input.on("error", reject);
 			input.pipe(child.stdin);
@@ -531,6 +564,7 @@ export async function download(
 	const inputVersion = options?.version
 		? Version.parse(options.version)
 		: undefined;
+
 	const {
 		platform = systemDefaultPlatform,
 		cachePath = defaultCachePath,
@@ -539,6 +573,7 @@ export async function download(
 	} = options;
 
 	let version: Version;
+
 	if (inputVersion?.id === "stable") {
 		version = await fetchTargetStableVersion({
 			timeout,
@@ -589,11 +624,13 @@ export async function download(
 		cachePath,
 		makeDownloadDirName(platform, version),
 	);
+
 	if (fs.existsSync(path.join(downloadedPath, COMPLETE_FILE_NAME))) {
 		if (version.isInsiders) {
 			reporter.report({
 				stage: ProgressReportStage.FetchingInsidersMetadata,
 			});
+
 			const { version: currentHash, date: currentDate } =
 				insidersDownloadDirMetadata(downloadedPath, platform);
 
@@ -614,6 +651,7 @@ export async function download(
 					stage: ProgressReportStage.FoundMatchingInstall,
 					downloadedPath,
 				});
+
 				return Promise.resolve(
 					insidersDownloadDirToExecutablePath(
 						downloadedPath,
@@ -636,6 +674,7 @@ export async function download(
 					});
 				} catch (err) {
 					reporter.error(err);
+
 					throw Error(
 						`Failed to remove outdated Insiders at ${downloadedPath}.`,
 					);
@@ -646,6 +685,7 @@ export async function download(
 				stage: ProgressReportStage.FoundMatchingInstall,
 				downloadedPath,
 			});
+
 			return Promise.resolve(
 				downloadDirToExecutablePath(downloadedPath, platform),
 			);
@@ -654,6 +694,7 @@ export async function download(
 				stage: ProgressReportStage.FoundMatchingInstall,
 				downloadedPath,
 			});
+
 			return Promise.resolve(
 				insidersDownloadDirToExecutablePath(downloadedPath, platform),
 			);
@@ -686,6 +727,7 @@ export async function download(
 				stage: ProgressReportStage.NewInstallComplete,
 				downloadedPath,
 			});
+
 			break;
 		} catch (error) {
 			if (i++ < DOWNLOAD_ATTEMPTS) {
@@ -697,6 +739,7 @@ export async function download(
 				});
 			} else {
 				reporter.error(error);
+
 				throw Error(`Failed to download and unzip VS Code ${version}`);
 			}
 		}

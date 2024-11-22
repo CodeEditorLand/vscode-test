@@ -128,13 +128,16 @@ async function innerRunTests(
 	},
 ): Promise<number> {
 	const fullEnv = Object.assign({}, process.env, testRunnerEnv);
+
 	const shell = process.platform === "win32";
+
 	const cmd = cp.spawn(shell ? `"${executable}"` : executable, args, {
 		env: fullEnv,
 		shell,
 	});
 
 	let exitRequested = false;
+
 	const ctrlc1 = () => {
 		process.removeListener(SIGINT, ctrlc1);
 		process.on(SIGINT, ctrlc2);
@@ -163,6 +166,7 @@ async function innerRunTests(
 		});
 
 		let finished = false;
+
 		function onProcessClosed(
 			code: number | null,
 			signal: NodeJS.Signals | null,
@@ -195,6 +199,7 @@ async function innerRunTests(
 	});
 
 	let code: number;
+
 	try {
 		code = await prom;
 	} finally {

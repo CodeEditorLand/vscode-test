@@ -13,11 +13,13 @@ export async function getStream(
 	timeout: number,
 ): Promise<IncomingMessage> {
 	const ctrl = new TimeoutController(timeout);
+
 	return new Promise<IncomingMessage>((resolve, reject) => {
 		ctrl.signal.addEventListener("abort", () => {
 			reject(new TimeoutError(timeout));
 			req.destroy();
 		});
+
 		const req = https
 			.get(api, urlToOptions(api), (res) => resolve(res))
 			.on("error", reject);
