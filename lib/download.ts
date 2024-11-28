@@ -76,6 +76,7 @@ export const fetchStableVersions = onceWithoutRejections(
 			timeout,
 		),
 );
+
 export const fetchInsiderVersions = onceWithoutRejections(
 	(released: boolean, timeout: number) =>
 		request.getJSON<string[]>(
@@ -245,7 +246,9 @@ async function isValidVersion(version: Version, timeout: number) {
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 type StringLiteralUnion<T extends string> = T | (string & {});
+
 export type DownloadVersion = StringLiteralUnion<"insiders" | "stable">;
+
 export type DownloadPlatform = StringLiteralUnion<
 	| "darwin"
 	| "darwin-arm64"
@@ -773,12 +776,14 @@ export async function download(
 export async function downloadAndUnzipVSCode(
 	options: Partial<DownloadOptions>,
 ): Promise<string>;
+
 export async function downloadAndUnzipVSCode(
 	version?: DownloadVersion,
 	platform?: DownloadPlatform,
 	reporter?: ProgressReporter,
 	extractSync?: boolean,
 ): Promise<string>;
+
 export async function downloadAndUnzipVSCode(
 	versionOrOptions?: DownloadVersion | Partial<DownloadOptions>,
 	platform?: DownloadPlatform,

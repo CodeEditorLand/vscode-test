@@ -4,7 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 export { download, downloadAndUnzipVSCode, DownloadOptions } from "./download";
+
 export { runTests, TestOptions, TestRunFailedError } from "./runTest";
+
 export {
 	resolveCliPathFromVSCodeExecutablePath,
 	resolveCliArgsFromVSCodeExecutablePath,
@@ -12,4 +14,5 @@ export {
 	VSCodeCommandError,
 	RunVSCodeCommandOptions,
 } from "./util";
+
 export * from "./progress.js";
