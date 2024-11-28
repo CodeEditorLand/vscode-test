@@ -118,6 +118,7 @@ export async function runTests(options: TestOptions): Promise<number> {
 		options.extensionTestsEnv,
 	);
 }
+
 const SIGINT = "SIGINT";
 
 async function innerRunTests(
