@@ -51,7 +51,9 @@ const DOWNLOAD_ATTEMPTS = 3;
 
 interface IFetchStableOptions {
 	timeout: number;
+
 	cachePath: string;
+
 	platform: string;
 }
 
@@ -147,6 +149,7 @@ export async function fetchTargetInferredVersion(
 		}
 
 		const v = extVersions.join(", ");
+
 		console.warn(
 			`No version of VS Code satisfies all extension engine constraints (${v}). Falling back to stable.`,
 		);
@@ -324,7 +327,9 @@ interface IDownload {
 	stream: NodeJS.ReadableStream;
 
 	format: "zip" | "tgz";
+
 	sha256?: string;
+
 	length: number;
 }
 
@@ -372,6 +377,7 @@ async function downloadVSCodeArchive(
 	if (res.statusCode !== 302) {
 		throw "Failed to get VS Code archive location";
 	}
+
 	const url = res.headers.location;
 
 	if (!url) {
@@ -379,6 +385,7 @@ async function downloadVSCodeArchive(
 	}
 
 	const contentSHA256 = res.headers["x-sha256"] as string | undefined;
+
 	res.destroy();
 
 	const download = await request.getStream(url, timeout);
@@ -394,6 +401,7 @@ async function downloadVSCodeArchive(
 	const isZip = fileName?.endsWith("zip") ?? url.endsWith(".zip");
 
 	const timeoutCtrl = new request.TimeoutController(timeout);
+
 	options.reporter?.report({
 		stage: ProgressReportStage.Downloading,
 		url,
@@ -405,7 +413,9 @@ async function downloadVSCodeArchive(
 
 	download.on("data", (chunk) => {
 		bytesSoFar += chunk.length;
+
 		timeoutCtrl.touch();
+
 		options.reporter?.report({
 			stage: ProgressReportStage.Downloading,
 			url,
@@ -416,6 +426,7 @@ async function downloadVSCodeArchive(
 
 	download.on("end", () => {
 		timeoutCtrl.dispose();
+
 		options.reporter?.report({
 			stage: ProgressReportStage.Downloading,
 			url,
@@ -467,6 +478,7 @@ async function unzipVSCode(
 					streamToBuffer(stream),
 					import("jszip"),
 				]);
+
 				await checksum;
 
 				const content = await JSZip.default.loadAsync(buffer);
@@ -488,6 +500,7 @@ async function unzipVSCode(
 					await fs.promises.mkdir(path.dirname(filepath), {
 						recursive: true,
 					});
+
 					await pipelineAsync(
 						file.nodeStream(),
 						fs.createWriteStream(filepath),
@@ -496,7 +509,9 @@ async function unzipVSCode(
 			} else {
 				// darwin or *nix sync
 				await pipelineAsync(stream, fs.createWriteStream(stagingFile));
+
 				await checksum;
+
 				await spawnDecompressorChild("unzip", [
 					"-q",
 					stagingFile,
@@ -515,11 +530,13 @@ async function unzipVSCode(
 
 		// The CLI is a singular binary that doesn't have a wrapper component to remove
 		const s = platform.includes("cli-") ? 0 : 1;
+
 		await spawnDecompressorChild(
 			"tar",
 			["-xzf", "-", `--strip-components=${s}`, "-C", extractDir],
 			stream,
 		);
+
 		await checksum;
 	}
 }
@@ -534,13 +551,16 @@ function spawnDecompressorChild(
 
 		if (input) {
 			input.on("error", reject);
+
 			input.pipe(child.stdin);
 		}
 
 		child.stderr.pipe(process.stderr);
+
 		child.stdout.pipe(process.stdout);
 
 		child.on("error", reject);
+
 		child.on("exit", (code) =>
 			code === 0
 				? resolve()
@@ -599,6 +619,7 @@ export async function download(
 				throw Error(`Invalid version ${inputVersion.id}`);
 			}
 		}
+
 		version = inputVersion;
 	} else {
 		version = await fetchTargetInferredVersion({
@@ -671,6 +692,7 @@ export async function download(
 						newDate: new Date(latestTimestamp),
 						newHash: latestHash,
 					});
+
 					await fs.promises.rm(downloadedPath, {
 						force: true,
 						recursive: true,
@@ -726,6 +748,7 @@ export async function download(
 				path.join(downloadedPath, COMPLETE_FILE_NAME),
 				"",
 			);
+
 			reporter.report({
 				stage: ProgressReportStage.NewInstallComplete,
 				downloadedPath,
@@ -747,6 +770,7 @@ export async function download(
 			}
 		}
 	}
+
 	reporter.report({
 		stage: ProgressReportStage.NewInstallComplete,
 		downloadedPath,

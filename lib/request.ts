@@ -17,6 +17,7 @@ export async function getStream(
 	return new Promise<IncomingMessage>((resolve, reject) => {
 		ctrl.signal.addEventListener("abort", () => {
 			reject(new TimeoutError(timeout));
+
 			req.destroy();
 		});
 
@@ -32,6 +33,7 @@ export async function getJSON<T>(api: string, timeout: number): Promise<T> {
 	return new Promise<T>((resolve, reject) => {
 		ctrl.signal.addEventListener("abort", () => {
 			reject(new TimeoutError(timeout));
+
 			req.destroy();
 		});
 
@@ -45,6 +47,7 @@ export async function getJSON<T>(api: string, timeout: number): Promise<T> {
 
 				res.on("data", (chunk) => {
 					ctrl.touch();
+
 					data += chunk;
 				});
 
@@ -53,11 +56,13 @@ export async function getJSON<T>(api: string, timeout: number): Promise<T> {
 
 					try {
 						const jsonData = JSON.parse(data);
+
 						resolve(jsonData);
 					} catch (err) {
 						console.error(
 							`Failed to parse response from ${api} as JSON`,
 						);
+
 						reject(err);
 					}
 				});
@@ -70,6 +75,7 @@ export async function getJSON<T>(api: string, timeout: number): Promise<T> {
 
 export class TimeoutController {
 	private handle: NodeJS.Timeout;
+
 	private readonly ctrl = new AbortController();
 
 	public get signal() {
@@ -82,6 +88,7 @@ export class TimeoutController {
 
 	public touch() {
 		clearTimeout(this.handle);
+
 		this.handle = setTimeout(this.reject, this.timeout);
 	}
 

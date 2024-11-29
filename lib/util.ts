@@ -108,6 +108,7 @@ let HTTPS_PROXY_AGENT: HttpsProxyAgent<string> | undefined = undefined;
 
 if (process.env.npm_config_proxy) {
 	PROXY_AGENT = new HttpProxyAgent(process.env.npm_config_proxy);
+
 	HTTPS_PROXY_AGENT = new HttpsProxyAgent(process.env.npm_config_proxy);
 }
 if (process.env.npm_config_https_proxy) {
@@ -178,6 +179,7 @@ export function insidersDownloadDirMetadata(
 	} else {
 		productJsonPath = path.resolve(dir, "resources/app/product.json");
 	}
+
 	const productJson = JSON.parse(readFileSync(productJsonPath, "utf-8"));
 
 	return {
@@ -188,12 +190,19 @@ export function insidersDownloadDirMetadata(
 
 export interface IUpdateMetadata {
 	url: string;
+
 	name: string;
+
 	version: string;
+
 	productVersion: string;
+
 	hash: string;
+
 	timestamp: number;
+
 	sha256hash: string;
+
 	supportsFastUpdate: boolean;
 }
 
@@ -227,6 +236,7 @@ export function resolveCliPathFromVSCodeExecutablePath(
 	if (platform === "win32-archive") {
 		throw new Error("Windows 32-bit is no longer supported");
 	}
+
 	if (windowsPlatforms.has(platform)) {
 		if (vscodeExecutablePath.endsWith("Code - Insiders.exe")) {
 			return path.resolve(
@@ -366,6 +376,7 @@ export async function runVSCodeCommand(
 			executable,
 			options?.platform ?? systemDefaultPlatform,
 		);
+
 		shell = process.platform === "win32"; // CVE-2024-27980
 	}
 
@@ -385,11 +396,13 @@ export async function runVSCodeCommand(
 			child.stdout
 				?.setEncoding("utf-8")
 				.on("data", (data) => (stdout += data));
+
 			child.stderr
 				?.setEncoding("utf-8")
 				.on("data", (data) => (stderr += data));
 
 			child.on("error", reject);
+
 			child.on("exit", (code) => {
 				if (code !== 0) {
 					reject(new VSCodeCommandError(args, code, stderr, stdout));
@@ -424,9 +437,12 @@ export function validateStream(
 	return new Promise<void>((resolve, reject) => {
 		readable.on("data", (chunk) => {
 			checksum?.update(chunk);
+
 			actualLen += chunk.length;
 		});
+
 		readable.on("error", reject);
+
 		readable.on("end", () => {
 			if (actualLen !== length) {
 				return reject(
@@ -455,8 +471,11 @@ export function validateStream(
 export function streamToBuffer(readable: NodeJS.ReadableStream) {
 	return new Promise<Buffer>((resolve, reject) => {
 		const chunks: Buffer[] = [];
+
 		readable.on("data", (chunk) => chunks.push(chunk));
+
 		readable.on("error", reject);
+
 		readable.on("end", () => resolve(Buffer.concat(chunks)));
 	});
 }

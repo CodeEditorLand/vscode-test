@@ -141,16 +141,23 @@ async function innerRunTests(
 
 	const ctrlc1 = () => {
 		process.removeListener(SIGINT, ctrlc1);
+
 		process.on(SIGINT, ctrlc2);
+
 		console.log("Closing VS Code gracefully. Press Ctrl+C to force close.");
+
 		exitRequested = true;
+
 		cmd.kill(SIGINT); // this should cause the returned promise to resolve
 	};
 
 	const ctrlc2 = () => {
 		console.log("Closing VS Code forcefully.");
+
 		process.removeListener(SIGINT, ctrlc2);
+
 		exitRequested = true;
+
 		killTree(cmd.pid!, true);
 	};
 
@@ -160,6 +167,7 @@ async function innerRunTests(
 		}
 
 		cmd.stdout.on("data", (d) => process.stdout.write(d));
+
 		cmd.stderr.on("data", (d) => process.stderr.write(d));
 
 		cmd.on("error", function (data) {
@@ -175,12 +183,15 @@ async function innerRunTests(
 			if (finished) {
 				return;
 			}
+
 			finished = true;
+
 			console.log(`Exit code:   ${code ?? signal}`);
 
 			// fix: on windows, it seems like these descriptors can linger for an
 			// indeterminate amount of time, causing the process to hang.
 			cmd.stdout.destroy();
+
 			cmd.stderr.destroy();
 
 			if (code !== 0) {
@@ -196,6 +207,7 @@ async function innerRunTests(
 		}
 
 		cmd.on("close", onProcessClosed);
+
 		cmd.on("exit", onProcessClosed);
 	});
 
@@ -205,6 +217,7 @@ async function innerRunTests(
 		code = await prom;
 	} finally {
 		process.removeListener(SIGINT, ctrlc1);
+
 		process.removeListener(SIGINT, ctrlc2);
 	}
 

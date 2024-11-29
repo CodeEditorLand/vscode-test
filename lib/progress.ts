@@ -35,9 +35,13 @@ export type ProgressReport =
 			stage: ProgressReportStage.ReplacingOldInsiders;
 
 			downloadedPath: string;
+
 			oldHash: string;
+
 			oldDate: Date;
+
 			newHash: string;
+
 			newDate: Date;
 	  }
 	| {
@@ -48,14 +52,20 @@ export type ProgressReport =
 	| { stage: ProgressReportStage.ResolvingCDNLocation; url: string }
 	| {
 			stage: ProgressReportStage.Downloading;
+
 			url: string;
+
 			totalBytes: number;
+
 			bytesSoFar: number;
 	  }
 	| {
 			stage: ProgressReportStage.Retrying;
+
 			error: Error;
+
 			attempt: number;
+
 			totalAttempts: number;
 	  }
 	| { stage: ProgressReportStage.ExtractingSynchonrously }
@@ -63,6 +73,7 @@ export type ProgressReport =
 
 export interface ProgressReporter {
 	report(report: ProgressReport): void;
+
 	error(err: unknown): void;
 }
 
@@ -96,6 +107,7 @@ export const makeConsoleReporter = async (): Promise<ProgressReporter> => {
 		error(err: unknown): void {
 			if (spinner) {
 				spinner?.fail(`Error: ${err}`);
+
 				spinner = undefined;
 			} else {
 				console.error(err);
@@ -106,13 +118,16 @@ export const makeConsoleReporter = async (): Promise<ProgressReporter> => {
 			switch (report.stage) {
 				case ProgressReportStage.ResolvedVersion:
 					version = report.version;
+
 					spinner?.succeed(`Validated version: ${version}`);
+
 					spinner = undefined;
 
 					break;
 
 				case ProgressReportStage.ReplacingOldInsiders:
 					spinner?.succeed();
+
 					spinner = ora(
 						`Updating Insiders ${report.oldHash} (${report.oldDate.toISOString()}) -> ${report.newHash}`,
 					).start();
@@ -121,7 +136,9 @@ export const makeConsoleReporter = async (): Promise<ProgressReporter> => {
 
 				case ProgressReportStage.FoundMatchingInstall:
 					spinner?.succeed();
+
 					spinner = undefined;
+
 					ora(
 						`Found existing install in ${report.downloadedPath}`,
 					).succeed();
@@ -130,6 +147,7 @@ export const makeConsoleReporter = async (): Promise<ProgressReporter> => {
 
 				case ProgressReportStage.ResolvingCDNLocation:
 					spinner?.succeed();
+
 					spinner = ora(`Found at ${report.url}`).start();
 
 					break;
@@ -137,6 +155,7 @@ export const makeConsoleReporter = async (): Promise<ProgressReporter> => {
 				case ProgressReportStage.Downloading:
 					if (report.bytesSoFar === 0) {
 						spinner?.succeed();
+
 						spinner = ora(
 							`Downloading (${toMB(report.totalBytes)} MB)`,
 						).start();
@@ -153,15 +172,18 @@ export const makeConsoleReporter = async (): Promise<ProgressReporter> => {
 							);
 
 							const size = `${toMB(report.bytesSoFar)}/${toMB(report.totalBytes)}MB`;
+
 							spinner.text = `Downloading VS Code: ${size} (${(percent * 100).toFixed()}%)`;
 						}
 					}
+
 					break;
 
 				case ProgressReportStage.Retrying:
 					spinner?.fail(
 						`Error downloading, retrying (attempt ${report.attempt} of ${report.totalAttempts}): ${report.error.message}`,
 					);
+
 					spinner = undefined;
 
 					break;
@@ -170,6 +192,7 @@ export const makeConsoleReporter = async (): Promise<ProgressReporter> => {
 					spinner?.succeed(
 						`Downloaded VS Code into ${report.downloadedPath}`,
 					);
+
 					spinner = undefined;
 
 					break;
