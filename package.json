@@ -25,7 +25,6 @@
 	"name": "@vscode/test-electron",
 	"scripts": {
 		"compile": "tsc -p ./",
-		"prepack": "tsc -p ./",
-		"prepare": "husky"
+		"prepack": "tsc -p ./"
 	}
 }
