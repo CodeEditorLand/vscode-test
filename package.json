@@ -22,7 +22,7 @@
 		]
 	},
 	"main": "./out/index.js",
-	"name": "@vscode/test-electron",
+	"name": "@codeeditorland/test-electron",
 	"scripts": {
 		"compile": "tsc -p ./",
 		"prepack": "tsc -p ./"
