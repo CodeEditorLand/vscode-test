@@ -41,8 +41,10 @@ const vscodeStableReleasesAPI = `https://update.code.visualstudio.com/api/releas
 
 const vscodeInsiderReleasesAPI = `https://update.code.visualstudio.com/api/releases/insider`;
 
-const downloadDirNameFormat = /^vscode-(?<platform>[a-z0-9-]+)-(?<version>[0-9.]+)$/;
-const makeDownloadDirName = (platform: string, version: Version) => `vscode-${platform}-${version.id}`;
+const downloadDirNameFormat =
+	/^vscode-(?<platform>[a-z0-9-]+)-(?<version>[0-9.]+)$/;
+const makeDownloadDirName = (platform: string, version: Version) =>
+	`vscode-${platform}-${version.id}`;
 
 const DOWNLOAD_ATTEMPTS = 3;
 
@@ -68,11 +70,19 @@ interface IFetchInferredOptions extends IFetchStableOptions {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (process as any).noAsar = true;
 
-export const fetchStableVersions = onceWithoutRejections((released: boolean, timeout: number) =>
-	request.getJSON<string[]>(`${vscodeStableReleasesAPI}?released=${released}`, timeout),
+export const fetchStableVersions = onceWithoutRejections(
+	(released: boolean, timeout: number) =>
+		request.getJSON<string[]>(
+			`${vscodeStableReleasesAPI}?released=${released}`,
+			timeout,
+		),
 );
-export const fetchInsiderVersions = onceWithoutRejections((released: boolean, timeout: number) =>
-	request.getJSON<string[]>(`${vscodeInsiderReleasesAPI}?released=${released}`, timeout),
+export const fetchInsiderVersions = onceWithoutRejections(
+	(released: boolean, timeout: number) =>
+		request.getJSON<string[]>(
+			`${vscodeInsiderReleasesAPI}?released=${released}`,
+			timeout,
+		),
 );
 
 /**
@@ -547,9 +557,15 @@ function spawnDecompressorChild(
 
 		child.stdout.pipe(process.stdout);
 
-		child.on('error', reject);
-		child.on('exit', (code) =>
-			code === 0 ? resolve() : reject(new Error(`Failed to unzip archive, exited with ${code}`)),
+		child.on("error", reject);
+		child.on("exit", (code) =>
+			code === 0
+				? resolve()
+				: reject(
+						new Error(
+							`Failed to unzip archive, exited with ${code}`,
+						),
+					),
 		);
 	});
 }
