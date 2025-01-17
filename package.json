@@ -25,6 +25,6 @@
 		"@types/node": "22",
 		"@types/rimraf": "4.0.5",
 		"@types/semver": "7.5.8",
-		"lint-staged": "15.3.0"
+		"lint-staged": "15.4.1"
 	}
 }
